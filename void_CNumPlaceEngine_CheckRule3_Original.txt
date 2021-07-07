@@ -1,0 +1,67 @@
+void CNumPlaceEngine::CheckRule3(){
+	// bool result[3];
+	for (int num = 1; num <= 3; ++num) {
+		for (int ys = 0; ys < 3; ++ys) {
+			for (int xs = 0; xs < 3; ++xs) {
+				int count = 0, ifound;
+				for (int i = 0; i < 3; ++i) {
+					if( ExistNumIn3(ys * 3 + i, xs, 0, num)){					
+						++count;
+						ifound = i;
+					}
+				}
+				if (count == 1) {
+					for (int i = 0; i < 3; ++i) {
+						if (i != xs) {
+							RemovePossibilityIn3(ys * 3 + ifound, i, 0, num);
+						}
+					}
+				}
+				count = 0;
+				for (int i = 0; i < 3; ++i) {					
+					if (ExistNumIn3(xs * 3 + i, ys, 1, num)) {
+						++count;
+						ifound = i;
+					}
+				}
+				if (count == 1) {
+					for (int i = 0; i < 3; ++i) {
+						if (i != ys) {
+							RemovePossibilityIn3(xs * 3 + ifound, i, 1, num);
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+bool CNumPlaceEngine::ExistNumIn3(int rc, int sect, int direction, int num){
+	// rc : row or column number,  sect: section number 0: 0-2 1:3-5 2:6-8, direction 0: x (row) 1: y (column)
+	bool exist = false;
+	if (direction == 0) {
+		for (int i = 0; i < 3; ++i) {
+			if (grid[sect * 3 + i][rc].possibleNum[num]) exist = true;
+		}
+	}
+	if (direction == 1) {
+		for (int i = 0; i < 3; ++i) {
+			if (grid[rc][sect*3+i].possibleNum[num]) exist = true;
+		}
+	}
+	return exist;
+}
+
+void CNumPlaceEngine::RemovePossibilityIn3(int rc, int sect, int direction, int num){
+	if (direction == 0) {
+		for (int i = 0; i < 3; ++i) {
+			grid[sect * 3 + i][rc].possibleNum[num]= false;
+		}
+	}
+	if (direction == 1) {
+		for (int i = 0; i < 3; ++i) {
+			grid[rc][sect * 3 + i].possibleNum[num] = false;
+		}
+	}
+}
+
